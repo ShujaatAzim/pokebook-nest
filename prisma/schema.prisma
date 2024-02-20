@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   email String
-  hash String
+  password String
   username String
   firstName String?
   lastName String?
