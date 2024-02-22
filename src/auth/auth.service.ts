@@ -19,13 +19,11 @@ export class AuthService {
         password: await argon.hash(dto.password),
         username: dto.username,
       },
-      select: {
-        id: true,
-        email: true,
-        username: true,
-        createdAt: true,
-      },
     });
+
+    // remove passwoird, quick and dirty solution until transformers
+    delete user.password;
+
     // return newly created and saved user
     return { status: 'Success', message: 'Successful registration', ...user };
   }
