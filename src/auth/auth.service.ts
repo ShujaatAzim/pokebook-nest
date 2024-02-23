@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
+import { error } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -11,20 +12,27 @@ export class AuthService {
   }
 
   async register(dto: AuthDto) {
-    // generate password hash
-    // save new user in db
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        password: await argon.hash(dto.password),
-        username: dto.username,
-      },
-    });
+    let user = await this.prisma.user
+      .create({
+        data: {
+          email: dto.email,
+          password: await argon.hash(dto.password),
+          username: dto.username,
+        },
+      })
+      .catch((err) => {
+        throw new HttpException(
+          `Error registering new user: ${err}`,
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      });
 
-    // remove passwoird, quick and dirty solution until transformers
-    delete user.password;
+    const { password, ...newUser } = user;
 
-    // return newly created and saved user
-    return { status: 'Success', message: 'Successful registration', ...user };
+    return {
+      status: HttpStatus.CREATED,
+      message: 'Successful registration',
+      newUser,
+    };
   }
 }

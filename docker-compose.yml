@@ -1,10 +1,12 @@
 version: '3.8'
 services:
-  pb-nest-db:
-    image: postgres:13
+  pb-db:
+    container_name: pokebook-backend
+    image: postgres
+    restart: always
     ports:
       - 5434:5432
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: pb-nest-db
+      POSTGRES_PASSWORD: pbdbbe
+      POSTGRES_DB: pb-db
