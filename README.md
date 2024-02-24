@@ -68,6 +68,12 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - Website - [https://nestjs.com](https://nestjs.com/)
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 
+Until they make a command for it, the only way to "reset" the db is to do the following:
+Change the DATABASE_URL under the .env file
+Change the provider under the schema.prisma to postgresql
+Delete the migrations folder under prisma
+Run prisma migrate dev
+
 ## License
 
 Nest is [MIT licensed](LICENSE).
