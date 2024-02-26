@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
@@ -7,8 +12,19 @@ import { error } from 'console';
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
-  login() {
-    return { status: 'Success', message: 'Successful login' };
+  async login(dto: AuthDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+    if (!user) throw new ForbiddenException('Credentials incorrect');
+
+    const pwMatch = await argon.verify(user.password, dto.password);
+    if (!pwMatch) throw new ForbiddenException('Credentials incorrect');
+
+    delete user.password;
+    return user;
   }
 
   async register(dto: AuthDto) {
