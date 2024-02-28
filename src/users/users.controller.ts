@@ -7,13 +7,12 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtGuard } from 'src/auth/guard';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { JwtGuard } from '../auth/guard';
+import { GetUser } from '../auth/decorators/get-user.decorator';
 import { User } from '@prisma/client';
 
 @UseGuards(JwtGuard)

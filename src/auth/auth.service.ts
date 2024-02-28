@@ -6,10 +6,9 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto } from './dto';
-import * as argon from 'argon2';
-import { error } from 'console';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import * as argon from 'argon2';
 
 @Injectable()
 export class AuthService {
