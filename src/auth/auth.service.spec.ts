@@ -18,4 +18,19 @@ describe('AuthService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  describe('signToken', () => {
+    const userId = 10301;
+    const email = 'tester@mctesterson.com';
+    const signFunc = service.signToken(userId, email);
+
+    it('should be defined', () => {
+      expect(signFunc).toBeDefined();
+    });
+
+    it('should return an access token', () => {
+      const token = signFunc;
+      expect(token).toBeTruthy();
+    });
+  });
 });
