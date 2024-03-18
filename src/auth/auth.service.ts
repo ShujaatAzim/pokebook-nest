@@ -66,13 +66,20 @@ export class AuthService {
     };
 
     const secret = this.config.get('JWT_SECRET');
-    const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
-      secret: secret,
-    });
+    try {
+      const token = await this.jwt.signAsync(payload, {
+        expiresIn: '15m',
+        secret: secret,
+      });
 
-    return {
-      access_token: token,
-    };
+      return {
+        access_token: token,
+      };
+    } catch (err) {
+      throw new HttpException(
+        `Error assigning token: ${err}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
