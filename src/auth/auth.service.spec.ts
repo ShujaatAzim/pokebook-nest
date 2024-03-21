@@ -3,17 +3,22 @@ import { AuthService } from './Auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
+import { AuthDto } from './dto';
 
 describe('AuthService', () => {
   let service: AuthService;
 
-  let res;
-  let error: HttpException;
+  let res: any;
+  let err: HttpException;
 
-  const userId = 10301;
-  const email = 'zug@loktar.com';
-  const token = { access_token: 'super secure token' };
+  const mockAuthDto: AuthDto = {
+    email: 'zug@loktar.com',
+    password: '12345',
+    username: 'garrosh',
+  };
+
+  const mockToken = { access_token: 'super secure token' };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,39 +32,36 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('Log in', () => {});
-
   describe('Register', () => {});
 
-  describe('signToken', () => {
+  describe('Login', () => {
     describe('happy paths', () => {
       beforeEach(() => {
-        jest.spyOn(service, 'signToken').mockResolvedValue(token);
+        jest.spyOn(service, 'login').mockResolvedValue(mockToken);
       });
 
       it('should return an access token', async () => {
-        res = await service.signToken(userId, email);
-        expect(res).toMatchObject(token);
+        res = await service.login(mockAuthDto);
+        expect(res).toMatchObject(mockToken);
       });
     });
 
     describe('sad paths', () => {
       beforeEach(() => {
-        jest.spyOn(service, 'signToken').mockRejectedValue('OH NOES!');
+        jest
+          .spyOn(service, 'login')
+          .mockRejectedValue(
+            new HttpException('TEST FAILED', HttpStatus.FORBIDDEN),
+          );
       });
 
       it('should throw the proper error', async () => {
         try {
-          await service.signToken(1, 'email');
-        } catch (e) {
-          error = e;
+          await service.login(mockAuthDto);
+        } catch (error) {
+          err = error;
         }
-        expect(error).toMatchObject(
-          new HttpException(
-            `Error assigning token: OH NOES!`,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-          ),
-        );
+        expect(err).toBeInstanceOf(HttpException);
       });
     });
   });

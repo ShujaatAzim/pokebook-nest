@@ -23,10 +23,10 @@ export class AuthService {
         email: dto.email,
       },
     });
-    if (!user) throw new ForbiddenException('Credentials incorrect');
 
     const pwMatch = await argon.verify(user.password, dto.password);
-    if (!pwMatch) throw new ForbiddenException('Credentials incorrect');
+    if (!user || !pwMatch)
+      throw new HttpException('Credentials incorrect', HttpStatus.FORBIDDEN);
 
     return this.signToken(user.id, user.email);
   }
@@ -56,7 +56,7 @@ export class AuthService {
     };
   }
 
-  async signToken(
+  private async signToken(
     userId: number,
     email: string,
   ): Promise<{ access_token: string }> {
@@ -76,8 +76,9 @@ export class AuthService {
         access_token: token,
       };
     } catch (err) {
+      console.log(err);
       throw new HttpException(
-        `Error assigning token: ${err}`,
+        `Error assigning token`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
