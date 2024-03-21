@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthDto } from './dto';
+import { User } from '@prisma/client';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -16,6 +17,21 @@ describe('AuthService', () => {
     email: 'zug@loktar.com',
     password: '12345',
     username: 'garrosh',
+  };
+
+  const mockUserCreated = {
+    status: HttpStatus.CREATED,
+    message: 'Successful registration',
+    newUser: {
+      id: 1,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      email: 'zug@loktar.com',
+      password: '12345',
+      username: 'garrosh',
+      firstName: 'Garrosh',
+      lastName: 'Hellscream',
+    },
   };
 
   const mockToken = { access_token: 'super secure token' };
@@ -32,7 +48,38 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('Register', () => {});
+  describe('Register', () => {
+    describe('happy paths', () => {
+      beforeEach(() => {
+        jest.spyOn(service, 'register').mockResolvedValue(mockUserCreated);
+      });
+
+      it('should return an object with the new user object', async () => {
+        res = await service.register(mockAuthDto);
+        expect(res.status).toBe(201);
+        expect(res.newUser).toMatchObject(mockUserCreated.newUser);
+      });
+    });
+
+    describe('sad paths', () => {
+      beforeEach(() => {
+        jest
+          .spyOn(service, 'register')
+          .mockRejectedValue(
+            new HttpException('TEST FAILED', HttpStatus.INTERNAL_SERVER_ERROR),
+          );
+      });
+
+      it('should throw the proper error', async () => {
+        try {
+          await service.register(mockAuthDto);
+        } catch (error) {
+          err = error;
+        }
+        expect(err).toBeInstanceOf(HttpException);
+      });
+    });
+  });
 
   describe('Login', () => {
     describe('happy paths', () => {
