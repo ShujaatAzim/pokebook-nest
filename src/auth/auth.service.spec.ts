@@ -5,7 +5,6 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ForbiddenException, HttpException, HttpStatus } from '@nestjs/common';
 import { AuthDto } from './dto';
-import { User } from '@prisma/client';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -38,7 +37,12 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, PrismaService, JwtService, ConfigService],
+      providers: [
+        AuthService,
+        { provide: PrismaService, useValue: {} },
+        { provide: JwtService, useValue: {} },
+        { provide: ConfigService, useValue: {} },
+      ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
