@@ -26,8 +26,9 @@ export class AuthService {
     });
 
     const pwMatch = await argon.verify(user.password, dto.password);
+
     if (!user || !pwMatch)
-      throw new HttpException('Credentials incorrect', HttpStatus.FORBIDDEN);
+      throw new ForbiddenException('Credentials incorrect');
 
     return this.signToken(user.id, user.email);
   }
