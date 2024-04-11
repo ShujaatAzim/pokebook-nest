@@ -9,6 +9,7 @@ describe('AuthController', () => {
 
   const mockService = {
     register: jest.fn(),
+    login: jest.fn(),
   };
 
   const mockAuthDto: AuthDto = {
@@ -39,6 +40,13 @@ describe('AuthController', () => {
     it('should call the register function in the service', async () => {
       await controller.register(mockAuthDto);
       expect(mockService.register).toHaveBeenCalledWith(mockAuthDto);
+    });
+  });
+
+  describe('Login', () => {
+    it('should call the login function in the service', async () => {
+      await controller.login(mockAuthDto);
+      expect(mockService.login).toHaveBeenCalled();
     });
   });
 });
