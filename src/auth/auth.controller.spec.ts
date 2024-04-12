@@ -2,15 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto';
+import { MockAuthService } from '../test/mockServices';
 
 describe('AuthController', () => {
   let controller: AuthController;
   let service: AuthService;
-
-  const mockService = {
-    register: jest.fn(),
-    login: jest.fn(),
-  };
 
   const mockAuthDto: AuthDto = {
     email: 'zug@loktar.com',
@@ -21,7 +17,7 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [{ provide: AuthService, useValue: mockService }],
+      providers: [{ provide: AuthService, useValue: MockAuthService }],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
@@ -39,14 +35,14 @@ describe('AuthController', () => {
   describe('Register', () => {
     it('should call the register function in the service', async () => {
       await controller.register(mockAuthDto);
-      expect(mockService.register).toHaveBeenCalledWith(mockAuthDto);
+      expect(MockAuthService.register).toHaveBeenCalledWith(mockAuthDto);
     });
   });
 
   describe('Login', () => {
     it('should call the login function in the service', async () => {
       await controller.login(mockAuthDto);
-      expect(mockService.login).toHaveBeenCalled();
+      expect(MockAuthService.login).toHaveBeenCalled();
     });
   });
 });
