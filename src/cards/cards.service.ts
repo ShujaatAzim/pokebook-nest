@@ -13,14 +13,14 @@ export class CardsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} card`;
+    return `This action returns a card with id: #${id}`;
   }
 
   update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
+    return `This action updates the card with id: #${id}`;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} card`;
+    return `This action deletes a card with id: #${id}`;
   }
 }
