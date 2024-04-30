@@ -13,7 +13,7 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    return `This action returns a user with this id:# ${id}`;
+    return `This action returns a user with id:# ${id}`;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
