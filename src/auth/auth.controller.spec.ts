@@ -6,7 +6,6 @@ import { MockAuthService } from '../test/mockServices';
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let service: AuthService;
 
   const mockAuthDto: AuthDto = {
     email: 'zug@loktar.com',
@@ -21,7 +20,6 @@ describe('AuthController', () => {
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
-    service = module.get<AuthService>(AuthService);
   });
 
   afterEach(() => {
