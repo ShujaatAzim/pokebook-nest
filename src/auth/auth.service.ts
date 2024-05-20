@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   async register(dto: AuthDto) {
-    let user = await this.prisma.user
+    const user = await this.prisma.user
       .create({
         data: {
           email: dto.email,
