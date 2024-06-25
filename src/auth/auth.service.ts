@@ -49,7 +49,7 @@ export class AuthService {
         );
       });
 
-    const { password, ...newUser } = user;
+    const { ...newUser } = user;
 
     return {
       status: HttpStatus.CREATED,
